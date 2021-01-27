@@ -6,13 +6,17 @@ import java.awt.image.BufferedImage
 
 import scala.collection.mutable.ArrayBuffer
 
-import DiffFinder.findDiffs
-
 import DiffImageWriter.writeDiffToImage
+
+import diff.finder._
 
 object Main {
   def main(args: Array[String]):Unit = {
-    args.foreach(println)
+    if(args.length < 2) {
+      println("Need the filename of two images as arguments")
+      System.exit(1)
+    }
+
     val file1 = new File(args(0))
     val file2 = new File(args(1))
 
@@ -40,12 +44,27 @@ object Main {
       System.exit(1)
     }
 
-    if(img1.getWidth != img2.getWidth || img1.getHeight != img2.getHeight) {
-      println("Images must have the same size.")
+    if(img1.getWidth != img2.getWidth) {
+      println("Images must have the same width.")
       System.exit(1)
     }
 
-    val resultLines = findDiffs(img1, img2)
+    var finderAlgorithm: DiffFinder = null
+
+    if(args.length > 2)
+       finderAlgorithm = args(2) match {
+        case "iterative" => new Iterative()
+        case "i" => new Iterative()
+        case "random" => new RandomShaker()
+        case "r" => new RandomShaker()
+        case "full" => new FullShaker()
+        case "f" => new FullShaker()
+        case _ => null
+      }
+     else 
+      finderAlgorithm = new RandomShaker()
+
+    val resultLines = finderAlgorithm.findDiffs(img1, img2)
 
     val diffImage = writeDiffToImage(img1, img2, resultLines)
   

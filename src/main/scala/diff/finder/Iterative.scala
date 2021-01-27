@@ -1,10 +1,13 @@
-package diff
+package diff.finder
 
 import java.awt.image.BufferedImage
 
 import scala.collection.mutable.ArrayBuffer
 
-object DiffFinder {
+import diff.{LineState, LineUnchanged, LineAdded, LineRemoved}
+
+class Iterative extends DiffFinder {
+
   def iter(yImg1: Int, yImg2: Int, maxY: Int, buffers: Tuple2[Array[Int], Array[Int]], images: Tuple2[BufferedImage, BufferedImage]): Int = {
     if(yImg2 >= maxY) -1
     else {

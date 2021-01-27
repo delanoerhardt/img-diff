@@ -2,4 +2,4 @@ target/
 .metals
 .vscode
 .bsp
-
+*.png
